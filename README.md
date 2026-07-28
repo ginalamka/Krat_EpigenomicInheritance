@@ -1,1 +1,4 @@
-# Krat_EpigenomicInheritance
+# Epigenomic inheritance in a wild, solitary, desert-dwelling rodent
+## Gina F. Lamka and Janna R. Willoughby
+
+Heritable portions of the epigenome may act as a mechanism of biotic adaptation or maladaptation, especially in fluctuating climates. Across four-generation lineages in a natural population of banner-tailed kangaroo rats, we found that DNA methylation similarity declined consistently with generational distance, consistent with incomplete but detectable epigenetic inheritance. While maternal-line transmission persisted over multiple generations, paternal-line signals decayed more rapidly. Additionally, comparisons among siblings and unrelated individuals revealed that methylation similarity did not scale linearly with genetic relatedness, suggesting complex interactions between inheritance, sex, and environmental context. These results highlight the nuanced role of epigenetic inheritance and suggest that DNA methylation is regulated through both lineage- and sex-specific mechanisms. 
