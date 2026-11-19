@@ -27,81 +27,7 @@ library(VennDiagram)
          x = "Year",
          y = "Methylation Variation (SD/Mean)") +
     theme_minimal()
-  
-  # Summary plot: Mean variation per year
-  summary_plot <- methylation_vars %>%
-    group_by(year) %>%
-    summarise(mean_variation = mean(variation, na.rm = TRUE),
-              sd_variation = sd(variation, na.rm = TRUE), .groups = "drop")
-  
-  ggplot(summary_plot, aes(x = year, y = mean_variation)) +
-    geom_line() +
-    geom_point(size = 2) +
-    geom_errorbar(aes(ymin = mean_variation - sd_variation, ymax = mean_variation + sd_variation), width = 0.2) +
-    labs(title = "Mean Methylation Variation by Year",
-         x = "Year",
-         y = "Mean Methylation Variation (SD/Mean)") +
-    theme_minimal()
-  
-  # Compute the 0.5% of variation for each year
-  yearly_thresholds <- methylation_vars %>%
-    group_by(year) %>%
-    summarise(threshold = quantile(variation, probs = 0.005, na.rm = TRUE), .groups = "drop")
-  
-  # Join back to methylation_vars to apply per-year thresholds
-  methylation_vars <- methylation_vars %>%
-    left_join(yearly_thresholds, by = "year") %>%
-    mutate(below_threshold = variation <= threshold)  # Flag windows
-  
-  # Filter for windows in the lowest 0.5% of variance
-  low_variance_windows <- methylation_vars %>%
-    filter(below_threshold)
-  
-  low_variance_windows # GOING WITH 0.5%
-  
-  # find windows that are signficant for more than one year
-  duplicates <- low_variance_windows %>%
-    group_by(window) %>%
-    filter(n() > 1) %>%
-    ungroup()
-  
-  # ** 0.5% has 888 (856 unique) - 74 per year **
-  # 1% has 1776 (1666 unique) -- 148 per year
-  # 5% has 8881 (6607 unique) -- 740 per year
-  # 10% has 17748 (10,130 unique) -- 1479 per year
-  
-  # # Compute mean and SD of variation for each year
-  # yearly_stats <- methylation_vars %>%
-  #   group_by(year) %>%
-  #   summarise(yearly_mean = mean(variation, na.rm = TRUE),
-  #             yearly_sd = sd(variation, na.rm = TRUE),
-  #             .groups = "drop")
-  # 
-  # # Join back to methylation_vars to apply per-year thresholds
-  # methylation_vars <- methylation_vars %>%
-  #   left_join(yearly_stats, by = "year") %>%
-  #   mutate(threshold = yearly_mean - 1 * yearly_sd)  # Adjust SD multiplier as needed
-  
-  # # Identify windows that are low in variation for **each specific year**
-  # env_windows <- methylation_vars %>%
-  #   filter(variation < threshold) %>%
-  #   select(year, window, variation)  # Keep relevant columns
-  # 
-  # # Count number of low-variation windows per year
-  # low_variation_counts <- env_windows %>%
-  #   group_by(year) %>%
-  #   summarise(num_windows = n(), .groups = "drop")
-  # 
-  # # Print the table
-  # print(low_variation_counts)
-  # 
-  # sig_env_windows <- env_windows
-  
-  # Optionally, save the table as a CSV file
-  # write.csv(sig_env_windows, "low_variation_windows_by_year_environment.csv", row.names = FALSE)
-}
-
-env = read.csv("low_variation_windows_by_year_environment.csv", header=T, sep=",")
+}  
 
 ## STEP 2:
 ## AVERAGE HERITABILITY
@@ -845,15 +771,6 @@ write.csv(sig_sib_windows_june2025, "signif_sibling_windows_contig_start_end_jun
 # 
 # # Subset window_names_82 where the first column matches any value in sig_regall$Window
 # inherited_windows <- window_names_82[window_names_82[,1] %in% sig_regall$Window, ]
-
-env = read.csv("low_variation_windows_by_year_environment.csv", header=T, sep=",")
-envir_windows <- window_names_82[window_names_82[,1] %in% low_variance_windows$window, ]
-
-nrow(envir_windows) # 856
-nrow(inherited_windows) # 24
-
-windows_of_note = rbind(inherited_windows, envir_windows)
-write.csv(windows_of_note, "windows_of_note.csv", row.names = FALSE)
 
 ### DO THIS IN EASLEY
 setwd("/home/gfl0003/kratepi/work/w_500_250")
